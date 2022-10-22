@@ -16,9 +16,9 @@ const Footer = () => {
       <img
         src={designSvg}
         alt="design"
-        style={{ width: "40px", margin: "0  25px 0 10px" }}
+        style={{ width: "25px", margin: "0  25px 0 10px" }}
       />
-      <span>design</span>
+      <span>  Design</span>
     </div>
   );
 };
