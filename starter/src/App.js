@@ -8,19 +8,18 @@ import mapSvg from "./assets/map.svg";
 import phoneSvg from "./assets/phone.svg";
 import padlockSvg from "./assets/padlock.svg";
 import cwSvg from "./assets/cw.svg";
+import Footer from "./components/footer/Footer";
 import axios from "axios";
-import Adduser from "./components/Adduser";
-
-const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
 
 function App() {
-  const [user, setUser] = useState([]);
+  const url = "https://randomuser.me/api/";
 
-  const getusers = async () => {
-    const url = "https://randomuser.me/api/";
+  const [user, setUser] = useState("");
+
+  const getUsers = async () => {
     try {
       const { data } = await axios(url);
-      // console.log(data.results[0]);
+      console.log(data);
       setUser(data.results[0]);
     } catch (error) {
       console.log(error);
@@ -28,15 +27,25 @@ function App() {
   };
 
   useEffect(() => {
-    getusers();
+    getUsers();
   }, []);
 
-  const { picture, email, name, phone, location, dob } = user;
   console.log(user);
 
-  const [changeuser, setChangeuser] = useState([name]);
+  const { picture, email, name, phone, location, dob, login } = user;
 
-  console.log(changeuser);
+  const [datatype, setDatatype] = useState(["name"]);
+
+  const dataConfigure = {
+    name: `${name?.first} ${name?.last}`,
+    email,
+    age: dob?.age,
+    country: location?.country,
+    phone,
+    password: login?.password,
+  };
+
+  const [newperson, setNewperson] = useState([]);
 
   return (
     <main>
@@ -46,57 +55,79 @@ function App() {
       <div className="block">
         <div className="container">
           <img src={picture?.large} alt="random user" className="user-img" />
-          <p className="user-title">My {changeuser} is</p>
-          <p className="user-value"></p>
+          <p className="user-title">My {datatype} is</p>
+          <p className="user-value">{dataConfigure[datatype]}</p>
           <div className="values-list">
             <button
               className="icon"
               data-label="name"
-              onClick={() => setChangeuser("name")}
+             onMouseOver={() => setDatatype("name")}
             >
-              <img src={womanSvg} alt="user" id="iconImg" />
+              <img
+                src={user?.gender === "female" ? womanSvg : manSvg}
+                alt="user"
+                id="iconImg"
+              />
             </button>
             <button
               className="icon"
               data-label="email"
-              onClick={() => setChangeuser("email")}
+             onMouseOver={() => setDatatype("email")}
             >
               <img src={mailSvg} alt="mail" id="iconImg" />
             </button>
             <button
               className="icon"
               data-label="age"
-              onClick={() => setChangeuser("age")}
+             onMouseOver={() => setDatatype("age")}
             >
-              <img src={womanAgeSvg} alt="age" id="iconImg" />
+              <img
+                src={user?.gender === "female" ? womanAgeSvg : manAgeSvg}
+                alt="age"
+                id="iconImg"
+              />
             </button>
             <button
               className="icon"
               data-label="street"
-              onClick={() => setChangeuser("street")}
+             onMouseOver={() => setDatatype("country")}
             >
               <img src={mapSvg} alt="map" id="iconImg" />
             </button>
             <button
               className="icon"
               data-label="phone"
-              onClick={() => setChangeuser("phone")}
+             onMouseOver={() => setDatatype("phone")}
             >
               <img src={phoneSvg} alt="phone" id="iconImg" />
             </button>
             <button
               className="icon"
               data-label="password"
-              onClick={() => setChangeuser("password")}
+             onMouseOver={() => setDatatype("password")}
             >
               <img src={padlockSvg} alt="lock" id="iconImg" />
             </button>
           </div>
           <div className="btn-group">
-            <button className="btn" type="button" onClick={() => getusers()}>
+            <button
+              className="btn"
+              type="button"
+              onClick={() => getUsers(dataConfigure.name)}
+            >
               new user
             </button>
-            <button className="btn" type="button">
+            <button
+              className="btn"
+              type="button"
+              onClick={() =>
+                setNewperson(
+                  [...newperson].includes(user)
+                    ? [...newperson]
+                    : [...newperson, user]
+                )
+              }
+            >
               add user
             </button>
           </div>
@@ -111,13 +142,20 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <tr className="body-tr">{<Adduser user={user} />}</tr>
+              {newperson.map((item) => (
+                <tr className="body-tr">
+                  <td className="td">{item.name?.first}</td>
+                  <td className="td">{item?.email}</td>
+                  <td className="td">{item?.phone}</td>
+                  <td className="td">{item.dob?.age}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-       
+        <Footer />
       </div>
     </main>
   );
