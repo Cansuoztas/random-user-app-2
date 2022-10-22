@@ -18,7 +18,7 @@ const Footer = () => {
         alt="design"
         style={{ width: "40px", margin: "0  25px 0 10px" }}
       />
-      <span>Copyright FC</span>
+      <span>design</span>
     </div>
   );
 };
